@@ -51,15 +51,15 @@ for detail in details:
     print(detail[1],end='|')
     # print('Edges:', detail[1])
     timeSeq = 0
-    for i in range(2):
+    for i in range(5):
         timeSeq += float(execute_command(".\\a.exe 0"))
     # print('Standard alghoritm:', timeSeq / 2)
-    print(timeSeq / 2,end='|')
+    print(timeSeq / 5,end='|')
 
     timePar = 0
-    for i in range(2):
+    for i in range(5):
         env_vars = {"OMP_NUM_THREADS": "16"}
         timePar += float(execute_command(".\\a.exe 1", env_vars))
     # print('Parallel alghoritm:', timePar / 2)
-    print(timePar / 2,end='|')
+    print(timePar / 5,end='|')
     print()
