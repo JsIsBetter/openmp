@@ -1,12 +1,8 @@
 #include <iostream>
 #include <fstream>
-#include <queue>
 #include <vector>
 #include <chrono>
 #include <omp.h>
-#include <random>
-#include <ctime>
-#include <algorithm>
 #include <sstream>
 #include <string>
 
@@ -17,10 +13,11 @@ void bfs(std::vector<std::vector<int>> graph) {
 
     visited[0] = true;
     toVisit.push_back(0);
+    int visitId = 0;
 
-    while (!toVisit.empty()) {
-        int item = toVisit[0];
-        toVisit.erase(toVisit.begin());
+    while (visitId < toVisit.size()) {
+        int item = toVisit[visitId];
+        visitId++;
 
         for (int i = 0; i < graph[item].size(); i++) {
             if (visited[graph[item][i]]) {
@@ -38,17 +35,18 @@ void bfsParallel(std::vector<std::vector<int>> graph) {
 
     visited[0] = true;
     toVisit.push_back(0);
+    int visitId = 0;
 
-    while (!toVisit.empty()) {
-        int len = toVisit.size();
+    while (visitId < toVisit.size()) {
+        int len = toVisit.size() - visitId;
 
         #pragma omp parallel for
         for (int i = 0; i < len; ++i) {
             int item;
             #pragma omp critical
             {
-                item = toVisit[0];
-                toVisit.erase(toVisit.begin());
+                item = toVisit[visitId];
+                visitId++;
             }
 
 
@@ -88,6 +86,7 @@ int main(int argc, char* argv[]) {
     } else {
         std::cerr << "Unable to open file: " << std::endl;
     }
+    
 
     auto start = std::chrono::high_resolution_clock::now();
     if (isParallel == 1) {
@@ -95,6 +94,7 @@ int main(int argc, char* argv[]) {
     } else {
         bfs(graph);
     }
+
     std::chrono::duration<double> duration = std::chrono::high_resolution_clock::now() - start;
     std::cout << duration.count() << std::endl;
 
