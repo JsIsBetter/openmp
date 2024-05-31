@@ -24,29 +24,15 @@ def createGraph(vertices, edges):
 
 
 def execute_command(command, env_vars=None):
-    try:
-        # Skopiuj aktualne zmienne środowiskowe
-        env = os.environ.copy()
-        
-        # Dodaj lub zmodyfikuj zmienne środowiskowe, jeśli zostały podane
-        if env_vars:
-            env.update(env_vars)
-
-        # Wywołaj komendę w shellu z podanymi zmiennymi środowiskowymi
-        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env)
-        
-        # Pobierz wyjście i błąd (jeśli istnieją)
-        output, error = process.communicate()
-        
-        # Sprawdź, czy komenda została wykonana poprawnie
-        if process.returncode == 0:
-            return output.strip()  # Zwróć wyjście bez białych znaków na końcach
-        else:
-            print("Błąd wykonania komendy:")
-            print(error)
-            return None
-    except Exception as e:
-        print("Wystąpił wyjątek:", e)
+    env = os.environ.copy()
+    if env_vars:
+        env.update(env_vars)
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env)
+    output, error = process.communicate()
+    if process.returncode == 0:
+        return output.strip()
+    else:
+        print(error)
         return None
 
 
